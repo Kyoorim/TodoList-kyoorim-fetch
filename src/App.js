@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 
 import MoviesList from "./components/MoviesList";
+import AddMovie from "./components/AddMovie";
 import "./App.css";
 
 function App() {
@@ -16,22 +17,27 @@ function App() {
     setError(null);
 
     // try {} catch{}로 오류 처리 해주기
+    // GET요청 관련 fetch
     try {
-      const response = await fetch("https://swapi.dev/api/films");
+      const response = await fetch(
+        "https://udemy-react-http-77f19-default-rtdb.firebaseio.com/movies.json"
+      ); // firebase 링크끝에 /movies.json이라고 추가함
       if (!response.ok) {
         throw new Error("Something went wrong");
       }
       const data = await response.json();
 
-      const transformedMovies = data.results.map((movieData) => {
-        return {
-          id: movieData.episode_id,
-          title: movieData.title,
-          openingText: movieData.opening_crawl,
-          releaseDate: movieData.release_date,
-        };
-      });
-      setMovies(transformedMovies);
+      const loadedMovies = [];
+
+      for (const key in data) {
+        loadedMovies.push({
+          id: key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          releaseDate: data[key].releaseDate,
+        });
+      }
+      setMovies(loadedMovies);
     } catch (error) {
       setError(error.message); // "Something went wrong"
     }
@@ -44,6 +50,22 @@ function App() {
   useEffect(() => {
     fetchMoviesHandler();
   }, [fetchMoviesHandler]);
+
+  // POST 요청 관련 fetch
+  async function addMovieHandler(movie) {
+    const response = await fetch(
+      "https://udemy-react-http-77f19-default-rtdb.firebaseio.com/movies.json",
+      {
+        method: "POST",
+        body: JSON.stringify(movie),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+    console.log(data); // 결과값: {name: '-N9a7yhrMvCi1GK_E4-1'} // firebase에서 정한 아이디
+  }
 
   // -----1. useCallback 사용하지 않은 경우!
   // async function fetchMoviesHandler() {
@@ -124,6 +146,9 @@ function App() {
 
   return (
     <React.Fragment>
+      <section>
+        <AddMovie onAddMovie={addMovieHandler} />
+      </section>
       <section>
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
