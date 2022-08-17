@@ -8,6 +8,19 @@ section {
   border-radius: 12px;
 }
 
+#form {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+#title {
+  font-weight: 800;
+  font-size: 3rem;
+  color: white;
+  margin: 2rem 2rem 0.5rem 2rem;
+}
+
 button {
   font: inherit;
   cursor: pointer;
