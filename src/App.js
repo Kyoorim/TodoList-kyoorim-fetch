@@ -72,6 +72,7 @@ function App() {
 
   let content = <p>Found no todos</p>;
   if (todos.length > 0) {
+    console.log(todos);
     content = <TodoList todos={todos} onDeleteItem={deleteListHandler} />;
   }
 
