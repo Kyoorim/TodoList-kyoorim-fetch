@@ -9,12 +9,22 @@ function AddTodo(props) {
   function submitHandler(event) {
     event.preventDefault();
 
-    // could add validation here...
-
     const todo = {
       category: categoryRef.current.value,
       text: textRef.current.value,
     };
+
+    const enteredCategoryIsValid = todo.category.trim() !== "";
+    const enteredTodoIsValid = todo.text.trim() !== "";
+
+    let formIsValid = false;
+    if (enteredCategoryIsValid && enteredTodoIsValid) {
+      formIsValid = true;
+    }
+
+    if (!formIsValid) {
+      return;
+    }
 
     props.onAddTodo(todo);
   }
